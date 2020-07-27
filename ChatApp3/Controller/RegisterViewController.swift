@@ -39,7 +39,7 @@ class RegisterViewController: UIViewController {
                 //関数の中に関数を入れる場合は自分自身を指すself
                 self.stopAnimation()
                 //画面をチャット画面に遷移させる
-                self.performSegue(withIdentifier: "chat", sender: nil)
+                //self.performSegue(withIdentifier: "profile", sender: nil)
                 
             }
         }
