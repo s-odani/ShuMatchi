@@ -68,10 +68,13 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
                           titleForRow row: Int,
                           forComponent component: Int) -> String? {
               if pickerView.tag == 1{
+                UserDefaults.standard.set(dataList2[row], forKey: "age")
                   return dataList2[row]
               } else if pickerView.tag == 2{
+                UserDefaults.standard.set(dataList[row], forKey: "industry")
                   return dataList[row]
               } else {
+                UserDefaults.standard.set(dataList2[row], forKey: "age")
                   return dataList2[row]
               }
 
@@ -88,14 +91,19 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         let imageData = logoImageView.image?.jpegData(compressionQuality: 0.1)
         UserDefaults.standard.set(imageData, forKey: "userImage")
         
-            let userDB = Database.database().reference().child("users")
+        let userDB = Database.database().reference().child("users")
             
-            //guard let industryText = UserDefaults.standard.object(forKey: "industry") as? String else {return}
+        guard let industryText = UserDefaults.standard.object(forKey: "industry") as? String else {return}
             
-           // guard let ageText = UserDefaults.standard.object(forKey: "age") as? String else {return}
+        print("industry")
+        print(industryText)
+        
+        guard let ageText = UserDefaults.standard.object(forKey: "age") as? String else {return}
             
+        print("age")
+        print(ageText)
             //キーバリュー型で内容を送信（辞書型）
-            let userInfo = ["sender": Auth.auth().currentUser?.email, "age": "22卒", "industry": "IT"]
+            let userInfo = ["sender": Auth.auth().currentUser?.email, "age": ageText, "industry": industryText]
             
             userDB.childByAutoId().setValue(userInfo) { (error, result) in
             if error != nil {
@@ -122,6 +130,8 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         showAlert()
     }
     
+    
+    //カメラ起動メソッド
     func doCamera(){
         
         let sourceType: UIImagePickerController.SourceType = .camera
@@ -135,7 +145,7 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         self.present(cameraPicker, animated: true, completion: nil)
         }
     }
-    
+    //アルバム起動メソッド
     func doAlbum(){
         let sourceType: UIImagePickerController.SourceType = .photoLibrary
            //カメラ利用可能かチェック
