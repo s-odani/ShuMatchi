@@ -87,6 +87,7 @@
                                 </state>
                                 <connections>
                                     <action selector="login:" destination="MDf-bp-ZWo" eventType="touchUpInside" id="Qw4-S3-o1y"/>
+                                    <segue destination="AeJ-P4-gLS" kind="show" id="78F-4i-VF5"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -97,7 +98,6 @@
                     <connections>
                         <outlet property="emailTextField" destination="LzK-r7-NCt" id="6CM-gm-dLo"/>
                         <outlet property="passwordTextField" destination="39l-S0-9mn" id="bTw-gR-EPb"/>
-                        <segue destination="jW6-4N-drz" kind="show" identifier="chat" id="TDX-Db-rPu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0s2-gE-HNU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -109,7 +109,7 @@
             <objects>
                 <viewController storyboardIdentifier="MainChat" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jW6-4N-drz" customClass="ChatViewController" customModule="ChatApp3" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="O6t-K6-xWR">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatLoginBG" id="FFV-8A-KaO">
@@ -262,22 +262,7 @@
                                 </state>
                                 <connections>
                                     <action selector="registerNewUser:" destination="9r3-3A-wDf" eventType="touchUpInside" id="E47-63-X7h"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Jw-WC-cUT">
-                                <rect key="frame" x="184" y="546" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <segue destination="35B-sM-jkn" kind="presentation" modalPresentationStyle="fullScreen" id="go9-yy-qoV"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Yf-6e-WLs">
-                                <rect key="frame" x="184" y="595" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <segue destination="1kM-qI-I83" kind="presentation" modalPresentationStyle="fullScreen" id="7vD-QG-mHS"/>
+                                    <segue destination="1kM-qI-I83" kind="show" id="qjr-zC-FwU"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -288,31 +273,11 @@
                     <connections>
                         <outlet property="emailTextField" destination="Nc2-KG-OOn" id="4oE-2g-5Uw"/>
                         <outlet property="passwordTextField" destination="fC8-Py-wUR" id="KOy-WF-1gR"/>
-                        <segue destination="jW6-4N-drz" kind="show" identifier="chat" id="icB-1p-eMc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W1L-VC-M3J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2234.7826086956525" y="613.39285714285711"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="fxQ-hQ-4aQ">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="35B-sM-jkn" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="meK-0j-fsU"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vUE-3V-ksV">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="AeJ-P4-gLS" kind="relationship" relationship="rootViewController" id="HNU-bY-Xhn"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eHN-MU-y46" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4144.927536231884" y="172.76785714285714"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="c4M-Ks-hzI">
@@ -375,13 +340,14 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
                                 <state key="normal" title="変更保存"/>
                                 <connections>
-                                    <segue destination="AeJ-P4-gLS" kind="presentation" modalPresentationStyle="fullScreen" id="fsQ-Fx-K8B"/>
+                                    <segue destination="AeJ-P4-gLS" kind="show" id="eRm-qg-V5I"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.99143940210000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="KTz-HN-qhn"/>
                     </view>
+                    <navigationItem key="navigationItem" id="fI7-gA-AcD"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F8c-6y-uUH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -395,7 +361,6 @@
         <image name="send" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="fsQ-Fx-K8B"/>
-        <segue reference="2Gv-Xp-wQC"/>
+        <segue reference="78F-4i-VF5"/>
     </inferredMetricsTieBreakers>
 </document>
