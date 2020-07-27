@@ -34,7 +34,7 @@ class LoginViewController: UIViewController {
                 print("ログイン成功！")
                 
                 self.stopAnimation()
-                self.performSegue(withIdentifier: "chat", sender: nil)
+                //self.performSegue(withIdentifier: "chat", sender: nil)
             }
         }
         
