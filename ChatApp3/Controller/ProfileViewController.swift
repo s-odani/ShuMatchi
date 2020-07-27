@@ -103,7 +103,7 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         print("age")
         print(ageText)
             //キーバリュー型で内容を送信（辞書型）
-            let userInfo = ["sender": Auth.auth().currentUser?.email, "age": ageText, "industry": industryText]
+        let userInfo = ["sender": Auth.auth().currentUser?.email, "name": userNameTextField.text!, "age": ageText, "industry": industryText]
             
             userDB.childByAutoId().setValue(userInfo) { (error, result) in
             if error != nil {
