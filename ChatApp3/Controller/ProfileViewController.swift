@@ -7,10 +7,15 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseDatabase
+import FirebaseAuth
 
 
-class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-
+class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @IBOutlet weak var logoImageView: UIImageView!
+    
+    @IBOutlet weak var userNameTextField: UITextField!
     @IBOutlet var selectYear: UIPickerView!
     @IBOutlet var selectIndustry: UIPickerView!
     
@@ -24,6 +29,8 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        logoImageView.layer.cornerRadius = 30.0
     
         selectYear.delegate = self
                 selectYear.dataSource = self
@@ -33,6 +40,11 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
                 selectYear.tag = 2
 
             }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
 
           // UIPickerViewの列の数
           func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -64,8 +76,124 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
               }
 
           }
+    
+    
+    @IBAction func done(_ sender: Any) {
+            
+        
+        //ユーザ名をアプリ内に保存
+        UserDefaults.standard.set(userNameTextField.text, forKey: "userName")
+        
+        //アイコンをアプリ内に保存
+        let imageData = logoImageView.image?.jpegData(compressionQuality: 0.1)
+        UserDefaults.standard.set(imageData, forKey: "userImage")
+        
+            let userDB = Database.database().reference().child("users")
+            
+            //guard let industryText = UserDefaults.standard.object(forKey: "industry") as? String else {return}
+            
+           // guard let ageText = UserDefaults.standard.object(forKey: "age") as? String else {return}
+            
+            //キーバリュー型で内容を送信（辞書型）
+            let userInfo = ["sender": Auth.auth().currentUser?.email, "age": "22卒", "industry": "IT"]
+            
+            userDB.childByAutoId().setValue(userInfo) { (error, result) in
+            if error != nil {
+                print(error)
+            } else {
+                print("送信成功")
+            }
+        }
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        userNameTextField.resignFirstResponder()
+    }
+    
+    
+    @IBAction func imageViewTap(_ sender: Any) {
+        
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+        
+        //アラートを出す
+        //カメラ　or アルバムを選択
+        showAlert()
+    }
+    
+    func doCamera(){
+        
+        let sourceType: UIImagePickerController.SourceType = .camera
+       //カメラ利用可能かチェック
+    if UIImagePickerController.isSourceTypeAvailable(.camera){
+        
+        let cameraPicker = UIImagePickerController()
+        cameraPicker.allowsEditing = true
+        cameraPicker.sourceType = sourceType
+        cameraPicker.delegate = self
+        self.present(cameraPicker, animated: true, completion: nil)
+        }
+    }
+    
+    func doAlbum(){
+        let sourceType: UIImagePickerController.SourceType = .photoLibrary
+           //カメラ利用可能かチェック
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+            
+            let cameraPicker = UIImagePickerController()
+            cameraPicker.allowsEditing = true
+            cameraPicker.sourceType = sourceType
+            cameraPicker.delegate = self
+            self.present(cameraPicker, animated: true, completion: nil)
+            }
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if info[.originalImage] as? UIImage != nil{
+            
+            let selectImage = info[.originalImage] as! UIImage
+            UserDefaults.standard.set(selectImage.jpegData(compressionQuality: 0.1), forKey: "userImage")
+            
+            logoImageView.image = selectImage
+            picker.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    //アラートを作成
+    
+    func showAlert(){
+        
+        let alertController = UIAlertController(title: "選択", message: "どちらを使用しますか？", preferredStyle: .actionSheet)
+        
+        let action1 = UIAlertAction(title: "カメラ", style: .default) { (alert) in
+            self.doCamera()
+        }
+        let action2 = UIAlertAction(title: "アルバム", style: .default) { (alert) in
+            
+            self.doAlbum()
+        }
+        let action3 = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(action1)
+        alertController.addAction(action2)
+        alertController.addAction(action3)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    
+    
+    
+    
+    
+}
 
     /*
     // MARK: - Navigation
