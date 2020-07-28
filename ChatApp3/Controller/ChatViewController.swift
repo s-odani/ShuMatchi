@@ -28,8 +28,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     //名前の遷移
     var toDoString = String()
     
+    var RECEIVER = String()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        decideReceiver()
         
         todoLabel.text = toDoString
         
@@ -53,6 +59,24 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         //Firebaseからデータをおfetch
         fetchChatData()
         tableView.separatorStyle = .none
+        
+    }
+    
+    func decideReceiver() {
+        
+        let ref = Database.database().reference().child("users")
+
+        ref.queryOrdered(byChild: "name").queryEqual(toValue: toDoString).observe(.value, with: { snapshot in
+            if let user = snapshot.value as? [String : AnyObject] {
+                for key in user {
+                    
+                    let name = key.value["sender"]! ??  nil
+                    print(name as! String)
+                    self.RECEIVER = (name as! String)
+       
+                }
+            }
+        })
         
     }
     //(_ :)は引数が取れる
@@ -148,8 +172,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let formatter: DateFormatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = format
-        print("sssssssssssssssssss")
-        print(string)
         return formatter.date(from: string)!// "2015/03/04 12:34:56 +09:00")!
     }
     
@@ -175,7 +197,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let dateString = stringFromDate(date: date,format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
         
         //キーバリュー型で内容を送信（辞書型）
-        let messageInfo = ["sender": Auth.auth().currentUser?.email, "receiver": "pochi@gmail.com", "message": messageTextField.text!, "date": dateString]
+        let messageInfo = ["sender": Auth.auth().currentUser?.email, "receiver": RECEIVER, "message": messageTextField.text!, "date": dateString]
         
         chatDB.childByAutoId().setValue(messageInfo) { (error, result) in
         if error != nil {
@@ -184,9 +206,18 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
          
             print("送信成功")
          
+            let message = Message()
+            message.message = self.messageTextField.text!
+            message.sender = (Auth.auth().currentUser?.email)!
+            self.chatArray.append(message)
+            self.tableView.reloadData()
+            
             self.messageTextField.isEnabled = true
             self.sendButton.isEnabled = true
             self.messageTextField.text = ""
+            
+            
+            
         }
         }
     }
@@ -199,8 +230,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     //var senDic = ["2020年07月28日 13時49分53秒 +0900": ["message": "test", "sender": "pochi@gmail.com", "receiver": "ponta.gmail.com"]]
     //var dictOfDict: [String: [String:String]]
     //var dictionary: [Date: [String:String] ] = [:]
-    var senDic: [Date: [String:String] ] = [:]
-    var recDic: [Date: [String:String] ] = [:]
+    var Dic: [Date: [String:String] ] = [:]
+    //var recDic: [Date: [String:String] ] = [:]
         
     let fetchDataRef = Database.database().reference().child("chats")
         
@@ -216,24 +247,20 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         //let text = snapShotData.value(forKey: "message")
         //print(receiver as! String, sender as! String)
-        let message = Message()
+        /*let message = Message()
         message.message = text as! String
         message.sender = sender as! String
         self.chatArray.append(message)
-        self.tableView.reloadData()
+        self.tableView.reloadData()*/
         
-        //if (receiver as! String) == "pochi@gmail.com" {
+        if (receiver as! String) == self.RECEIVER {
         let data = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
         
-        print("time")
-        print(time)
-        print("time as! String")
-        print(time as! String)
         
-        print((Auth.auth().currentUser?.email)!)
-        senDic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String)]
-            
-            print(senDic)
+        //print((Auth.auth().currentUser?.email)!)
+        Dic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String)]
+            //print("placeSample")
+           // print(Dic)
             
             
             
@@ -243,7 +270,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.chatArray.append(message)
             self.tableView.reloadData()*/
             
-       // }
+        }
         
     }
     }
@@ -261,16 +288,16 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             //let text = snapShotData.value(forKey: "message")
             //print(receiver as! String, sender as! String)
             
-            let message = Message()
+            /*let message = Message()
             message.message = text as! String
             message.sender = sender as! String
             self.chatArray.append(message)
-            self.tableView.reloadData()
+            self.tableView.reloadData()*/
             
-            if (sender as! String) == "pochi@gmail.com" {
+            if (sender as! String) == self.RECEIVER {
                 let data2 = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
                 
-                recDic[data2] = ["message": text as! String, "sender": receiver as! String , "receiver": (Auth.auth().currentUser?.email)!]
+                Dic[data2] = ["message": text as! String, "sender": receiver as! String , "receiver": (Auth.auth().currentUser?.email)!]
                 
             //if (receiver as! String) == Auth.auth().currentUser?.email && (sender as! String) == "ponta@gmail.com" || (sender as! String) == Auth.auth().currentUser?.email && (receiver as! String) == "ponta@gmail.com" {
             }
@@ -282,6 +309,20 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.tableView.reloadData()*/
             
         }
+        print("マージ111111111111111111111111111111111111")
+        //print(Dic)
+        let dictionaly = Dic.sorted() { $0.0 < $1.0 }
+        print(dictionaly)
+        
+        
+        for i in dictionaly {
+            let message = Message()
+            message.message = i.value["message"]!
+            message.sender = i.value["sender"]!
+            self.chatArray.append(message)
+        }
+        self.tableView.reloadData()
+        
         }
         })
         
@@ -290,10 +331,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         //結合を描くここに///
         
         
-        let mergedDictionary = senDic.merging(recDic) { $1 }
-        print("マージ")
-        print(mergedDictionary.description)
-            
+        //let mergedDictionary = senDic.merging(recDic) { $1 }
+        
        
     /*
     
