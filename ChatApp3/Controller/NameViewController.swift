@@ -39,7 +39,7 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
     let ref = Database.database().reference().child("users")
 
-    ref.queryOrdered(byChild: "industry").queryEqual(toValue: industry1).observe(.value, with: { snapshot in
+    ref.queryOrdered(byChild: "industry1").queryEqual(toValue: industry1).observe(.value, with: { snapshot in
         if let user = snapshot.value as? [String : AnyObject] {
             for key in user {
                 //print(key.key)
