@@ -152,7 +152,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
          cell.userNameLabel.text = chatArray[indexPath.row].sender
          cell.iconImageView.image = UIImage(named: "dogAvatarImage")
          
-        if cell.userNameLabel.text == Auth.auth().currentUser?.email as! String {
+        if cell.userNameLabel.text != toDoString as! String {
             
             cell.messageLabel.backgroundColor = UIColor.flatGreen()
             cell.messageLabel.layer.cornerRadius = 20
@@ -265,6 +265,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let receiver = key.value["receiver"]! ??  0
         let text = key.value["message"]! ??  0
         let time = key.value["date"]! ?? 0
+        let user = key.value["userName"]! ?? 0
         
         //let text = snapShotData.value(forKey: "message")
         //print(receiver as! String, sender as! String)
@@ -279,7 +280,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         
         //print((Auth.auth().currentUser?.email)!)
-        Dic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String)]
+            Dic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String), "userName": (user as! String)]
             //print("placeSample")
            // print(Dic)
             
@@ -306,6 +307,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             let receiver = key.value["receiver"]! ??  0
             let text = key.value["message"]! ??  0
             let time = key.value["date"]! ?? 0
+            let user = key.value["userName"]! ?? 0
             //let text = snapShotData.value(forKey: "message")
             //print(receiver as! String, sender as! String)
             
@@ -318,7 +320,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             if (sender as! String) == self.RECEIVER {
                 let data2 = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
                 
-                Dic[data2] = ["message": text as! String, "sender": (sender as! String) , "receiver": (Auth.auth().currentUser?.email)!]
+                Dic[data2] = ["message": text as! String, "sender": (sender as! String) , "receiver": (Auth.auth().currentUser?.email)!, "userName": (user as! String)]
                 
             //if (receiver as! String) == Auth.auth().currentUser?.email && (sender as! String) == "ponta@gmail.com" || (sender as! String) == Auth.auth().currentUser?.email && (receiver as! String) == "ponta@gmail.com" {
             }
