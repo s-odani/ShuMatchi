@@ -17,8 +17,8 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
    
     @IBOutlet weak var tableView: UITableView!
     
-    var tableData = ["八神月","R","高田","渋井丸拓夫","渋井丸拓夫"]
-    
+   // var tableData = [""]//八神月","R","高田","渋井丸拓夫","渋井丸拓夫"]
+    var tableData:[String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +30,30 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
         fetchDataRef()
         self.tableView.reloadData()
+    }
+    
+    func fetchDataRef(){
+    let industry = "IT"
+    //guard let industry = UserDefaults.standard.object(forKey: "industry") as? String else {return}
+        
+    let ref = Database.database().reference().child("users")
+
+    ref.queryOrdered(byChild: "industry").queryEqual(toValue: industry).observe(.value, with: { snapshot in
+        if let user = snapshot.value as? [String : AnyObject] {
+            for key in user {
+                //print(key.key)
+                let name = key.value["name"]! ??  nil
+                //print(key.value["name"]! ??  0)
+                //print(sender)
+                if(name != nil){
+                self.tableData.append( name as! String )
+                }
+                }
+            //print("testPlace")
+            //print(self.tableData)
+            self.tableView.reloadData()
+        }
+    })
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -58,22 +82,27 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         return view.frame.size.height/10
     }
     
-    func fetchDataRef(){
+    
+    /////////////////
+    /*func fetchDataRef(){
         guard let industry = UserDefaults.standard.object(forKey: "industry") as? String else {return}
             
         
         //print(industry)
         
-        let ref = Database.database().reference().child("users")
+  let ref = Database.database().reference().child("users")
 
         ref.queryOrdered(byChild: "industry").queryEqual(toValue: industry).observe(.value, with: { snapshot in
             if let user = snapshot.value as? [String : AnyObject] {
                 for key in user {
                     //print(key.key)
-                    let sender = key.value["sender"]! ??  0
+                    //let sender = key.value["sender"]! ??  0
+                    let name = key.value["name"]! ?? 0
+                    
+                   // UserDefaults.standard.set(sender as! String, forKey: sender as! String)
                     //print(key.value["sender"]! ??  0)
                     //print(sender)
-                    self.tableData.append(sender as! String)
+                    self.tableData.append(name as! String)
                     }
                 print("testPlace")
                 print(self.tableData)
@@ -81,7 +110,7 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
             }
         })
     
-        //self.tableView.reloadData()
-    }
+       //self.tableView.reloadData()
+    }*/
 }
 

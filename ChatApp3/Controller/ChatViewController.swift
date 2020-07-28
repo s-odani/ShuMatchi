@@ -134,6 +134,25 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             //view.frame.size.height/10
     }
     
+    
+    //dateを文字列に変換するメソッド
+    func stringFromDate(date: Date, format: String) -> String {
+        let formatter: DateFormatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = format
+        return formatter.string(from: date)
+    }
+    
+    //日時文字列をDate型に変換
+    func dateFromString(string: String, format: String) -> Date {
+        let formatter: DateFormatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = format
+        return formatter.date(from: "2015/03/04 12:34:56 +09:00")!
+    }
+    
+    
+    
     @IBAction func sendAction(_ sender: Any) {
         
         messageTextField.endEditing(true)
@@ -150,9 +169,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let chatDB = Database.database().reference().child("chats")
         
+        let date : Date = Date()
+        let dateString = stringFromDate(date: date,format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
         
         //キーバリュー型で内容を送信（辞書型）
-        let messageInfo = ["sender": Auth.auth().currentUser?.email, "message": messageTextField.text!]
+        let messageInfo = ["sender": Auth.auth().currentUser?.email, "receiver": "pochi@gmail.com", "message": messageTextField.text!, "date": dateString]
         
         chatDB.childByAutoId().setValue(messageInfo) { (error, result) in
         if error != nil {
@@ -169,11 +190,113 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func fetchChatData() {
+        
+    //guard let receiver = UserDefaults.standard.object(forKey: toDoString) as? String else {return}
      
+ //let notificationArray = [[String:Dictionary<<#Key: Hashable#>, Any>]]()
+    //var senDic = ["2020年07月28日 13時49分53秒 +0900": ["message": "test", "sender": "pochi@gmail.com", "receiver": "ponta.gmail.com"]]
+    //var dictOfDict: [String: [String:String]]
+    //var dictionary: [Date: [String:String] ] = [:]
+    var senDic: [Date: [String:String] ] = [:]
+    var recDic: [Date: [String:String] ] = [:]
+        
     let fetchDataRef = Database.database().reference().child("chats")
+        
+    fetchDataRef.queryOrdered(byChild: "sender").queryEqual(toValue: Auth.auth().currentUser?.email).observe(.value, with: { snapshot in
+    if let user = snapshot.value as? [String : AnyObject] {
+    for key in user {
+        //print(key.key)
+        //let snapShotData = key.value as!AnyObject
+        let sender = key.value["sender"]! ??  0
+        let receiver = key.value["receiver"]! ??  0
+        let text = key.value["message"]! ??  0
+        let time = key.value["date"]! ?? 0
+        
+        //let text = snapShotData.value(forKey: "message")
+        //print(receiver as! String, sender as! String)
+        let message = Message()
+        message.message = text as! String
+        message.sender = sender as! String
+        self.chatArray.append(message)
+        self.tableView.reloadData()
+        
+        //if (receiver as! String) == "pochi@gmail.com" {
+            let data = self.dateFromString(string: (time as! String), format: "yyyy/MM/dd HH:mm:ss Z")
+            print(data)
+            
+            print("data")
+        print(data)
+        print("message")
+        print(message)
+        print((Auth.auth().currentUser?.email)!)
+        senDic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String)]
+            
+            print(senDic)
+            
+            
+            
+            /*let message = Message()
+            message.message = text as! String
+            message.sender = sender as! String
+            self.chatArray.append(message)
+            self.tableView.reloadData()*/
+            
+       // }
+        
+    }
+    }
+    })
      
+    fetchDataRef.queryOrdered(byChild: "receiver").queryEqual(toValue: Auth.auth().currentUser?.email).observe(.value, with: { snapshot in
+    if let user = snapshot.value as? [String : AnyObject] {
+        for key in user {
+            //print(key.key)
+            //let snapShotData = key.value as!AnyObject
+            let sender = key.value["sender"]! ??  0
+            let receiver = key.value["receiver"]! ??  0
+            let text = key.value["message"]! ??  0
+            let time = key.value["date"]! ?? 0
+            //let text = snapShotData.value(forKey: "message")
+            //print(receiver as! String, sender as! String)
+            
+            let message = Message()
+            message.message = text as! String
+            message.sender = sender as! String
+            self.chatArray.append(message)
+            self.tableView.reloadData()
+            
+            if (sender as! String) == "pochi@gmail.com" {
+                let data2 = self.dateFromString(string: (time as! String), format: "yyyy/MM/dd HH:mm:ss Z")
+                
+                recDic[data2] = ["message": text as! String, "sender": receiver as! String , "receiver": (Auth.auth().currentUser?.email)!]
+                
+            //if (receiver as! String) == Auth.auth().currentUser?.email && (sender as! String) == "ponta@gmail.com" || (sender as! String) == Auth.auth().currentUser?.email && (receiver as! String) == "ponta@gmail.com" {
+            }
+                /*
+                let message = Message()
+                message.message = text as! String
+                message.sender = sender as! String
+                self.chatArray.append(message)
+                self.tableView.reloadData()*/
+            
+        }
+        }
+        })
+        
+        
+        
+        //結合を描くここに///
+        
+        
+        //let mergedDictionary = senDic.merging(recDic as! [String : [String : String]]) { $1 }
+//        print(mergedDictionary.description)
+            
+       
+    /*
+    
+    let fetchDataRef = Database.database().reference().child("chats")
     fetchDataRef.observe(.childAdded) { (snapShot) in
-     
+    
     let snapShotData = snapShot.value as!AnyObject
     let text = snapShotData.value(forKey: "message")
     let sender = snapShotData.value(forKey: "sender")
@@ -185,9 +308,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     self.tableView.reloadData()
      
     }
-     
-    }
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -196,5 +317,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Pass the selected object to the new view controller.
     }
     */
+
+}
 
 }
