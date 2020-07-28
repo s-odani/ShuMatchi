@@ -33,12 +33,13 @@ class NameViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     }
     
     func fetchDataRef(){
-    let industry = "IT"
+   // let industry = "IT"
+     guard let industry1 = UserDefaults.standard.object(forKey: "industry1") as? String else {return}
     //guard let industry = UserDefaults.standard.object(forKey: "industry") as? String else {return}
         
     let ref = Database.database().reference().child("users")
 
-    ref.queryOrdered(byChild: "industry").queryEqual(toValue: industry).observe(.value, with: { snapshot in
+    ref.queryOrdered(byChild: "industry").queryEqual(toValue: industry1).observe(.value, with: { snapshot in
         if let user = snapshot.value as? [String : AnyObject] {
             for key in user {
                 //print(key.key)

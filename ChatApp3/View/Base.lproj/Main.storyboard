@@ -370,7 +370,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="fI7-gA-AcD"/>
                     <connections>
+                        <outlet property="facultyTextField" destination="cFU-IU-SJd" id="NZM-Go-Jmb"/>
                         <outlet property="logoImageView" destination="twR-fX-hEO" id="uBP-Tg-qMp"/>
+                        <outlet property="schoolTextField" destination="spq-L2-DH4" id="hxy-wO-qfK"/>
+                        <outlet property="selectIndustry1" destination="GcO-My-67P" id="1Bs-AA-0wl"/>
+                        <outlet property="selectIndustry2" destination="2NO-1s-Zbu" id="qAD-cn-KTR"/>
                         <outlet property="selectYear" destination="aGT-Gy-yaC" id="DeB-Fj-TJL"/>
                         <outlet property="userNameTextField" destination="zeu-w9-yr4" id="5yi-s8-5ow"/>
                     </connections>

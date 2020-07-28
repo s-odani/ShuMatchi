@@ -30,6 +30,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var RECEIVER = String()
     
+    var USERNAME = String()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +68,24 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let ref = Database.database().reference().child("users")
 
         ref.queryOrdered(byChild: "name").queryEqual(toValue: toDoString).observe(.value, with: { snapshot in
+            if let user = snapshot.value as? [String : AnyObject] {
+                for key in user {
+                    
+                    let name = key.value["sender"]! ??  nil
+                    print(name as! String)
+                    self.RECEIVER = (name as! String)
+       
+                }
+            }
+        })
+        
+    }
+    
+    func decideUserName() {
+        
+        let ref = Database.database().reference().child("users")
+
+        ref.queryOrdered(byChild: "email").queryEqual(toValue: toDoString).observe(.value, with: { snapshot in
             if let user = snapshot.value as? [String : AnyObject] {
                 for key in user {
                     
@@ -196,8 +215,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let date : Date = Date()
         let dateString = stringFromDate(date: date,format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
         
+        guard let userName = UserDefaults.standard.object(forKey: "userName") as? String else {return}
+        
         //キーバリュー型で内容を送信（辞書型）
-        let messageInfo = ["sender": Auth.auth().currentUser?.email, "receiver": RECEIVER, "message": messageTextField.text!, "date": dateString]
+        let messageInfo = ["sender": Auth.auth().currentUser?.email, "receiver": RECEIVER, "message": messageTextField.text!, "date": dateString, "userName": userName]
         
         chatDB.childByAutoId().setValue(messageInfo) { (error, result) in
         if error != nil {
@@ -208,7 +229,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
          
             let message = Message()
             message.message = self.messageTextField.text!
-            message.sender = (Auth.auth().currentUser?.email)!
+            message.sender = userName
             self.chatArray.append(message)
             self.tableView.reloadData()
             
@@ -297,7 +318,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             if (sender as! String) == self.RECEIVER {
                 let data2 = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
                 
-                Dic[data2] = ["message": text as! String, "sender": receiver as! String , "receiver": (Auth.auth().currentUser?.email)!]
+                Dic[data2] = ["message": text as! String, "sender": (sender as! String) , "receiver": (Auth.auth().currentUser?.email)!]
                 
             //if (receiver as! String) == Auth.auth().currentUser?.email && (sender as! String) == "ponta@gmail.com" || (sender as! String) == Auth.auth().currentUser?.email && (receiver as! String) == "ponta@gmail.com" {
             }
@@ -310,7 +331,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         print("マージ111111111111111111111111111111111111")
-        //print(Dic)
+        print(Dic)
         let dictionaly = Dic.sorted() { $0.0 < $1.0 }
         print(dictionaly)
         
@@ -318,7 +339,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         for i in dictionaly {
             let message = Message()
             message.message = i.value["message"]!
-            message.sender = i.value["sender"]!
+            message.sender = i.value["userName"]!
             self.chatArray.append(message)
         }
         self.tableView.reloadData()

@@ -19,6 +19,7 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     @IBOutlet var selectYear: UIPickerView!
  
     @IBOutlet weak var schoolTextField: UITextField!
+    
     @IBOutlet weak var facultyTextField: UITextField!
     @IBOutlet weak var selectIndustry1: UIPickerView!
     @IBOutlet weak var selectIndustry2: UIPickerView!
