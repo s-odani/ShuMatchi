@@ -148,7 +148,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let formatter: DateFormatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = format
-        return formatter.date(from: "2015/03/04 12:34:56 +09:00")!
+        print("sssssssssssssssssss")
+        print(string)
+        return formatter.date(from: string)!// "2015/03/04 12:34:56 +09:00")!
     }
     
     
@@ -221,13 +223,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.reloadData()
         
         //if (receiver as! String) == "pochi@gmail.com" {
-            let data = self.dateFromString(string: (time as! String), format: "yyyy/MM/dd HH:mm:ss Z")
-            print(data)
-            
-            print("data")
-        print(data)
-        print("message")
-        print(message)
+        let data = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
+        
+        print("time")
+        print(time)
+        print("time as! String")
+        print(time as! String)
+        
         print((Auth.auth().currentUser?.email)!)
         senDic[data] = ["message": (text as! String), "sender": (Auth.auth().currentUser?.email)!, "receiver": (receiver as! String)]
             
@@ -266,7 +268,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.tableView.reloadData()
             
             if (sender as! String) == "pochi@gmail.com" {
-                let data2 = self.dateFromString(string: (time as! String), format: "yyyy/MM/dd HH:mm:ss Z")
+                let data2 = self.dateFromString(string: (time as! String), format: "yyyy年MM月dd日 HH時mm分ss秒 Z")
                 
                 recDic[data2] = ["message": text as! String, "sender": receiver as! String , "receiver": (Auth.auth().currentUser?.email)!]
                 
@@ -288,8 +290,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         //結合を描くここに///
         
         
-        //let mergedDictionary = senDic.merging(recDic as! [String : [String : String]]) { $1 }
-//        print(mergedDictionary.description)
+        let mergedDictionary = senDic.merging(recDic) { $1 }
+        print("マージ")
+        print(mergedDictionary.description)
             
        
     /*
