@@ -28,6 +28,10 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     let dataList = [
         "メーカー", "商社", "金融", "小売", "IT", "マスコミ・広告", "サービス・インフラ", "官公庁・公社"
     ]
+    
+    let dataList1 = [
+        "メーカー", "商社", "金融", "小売", "IT", "マスコミ・広告", "サービス・インフラ", "官公庁・公社"
+    ]
 
     let dataList2 = [
         "21卒", "22卒", "23卒", "24卒"
@@ -69,7 +73,7 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
             } else if pickerView.tag == 2{
                 return dataList.count
             } else if pickerView.tag == 3{
-                return dataList.count
+                return dataList1.count
             } else {
                 return 0
         }
@@ -86,8 +90,8 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
                 UserDefaults.standard.set(dataList[row], forKey: "industry1")
                   return dataList[row]
               } else if pickerView.tag == 3{
-                UserDefaults.standard.set(dataList[row], forKey: "industry2")
-                return dataList[row]
+                UserDefaults.standard.set(dataList1[row], forKey: "industry2")
+                return dataList1[row]
               } else {
                 return ""
         }
@@ -106,10 +110,12 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         UserDefaults.standard.set(imageData, forKey: "userImage")
         
         let userDB = Database.database().reference().child("users")
-            
+        
+        
         guard let industry1Text = UserDefaults.standard.object(forKey: "industry1") as? String else {return}
             
         print("industry1")
+        print(selectIndustry1!)
         print(industry1Text)
         
         guard let industry2Text = UserDefaults.standard.object(forKey: "industry2") as? String else {return}
